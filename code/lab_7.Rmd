@@ -1,0 +1,58 @@
+---
+title: "lab_7"
+author: "Tian Walker, Dominik Grätz, Amber Somarriba, Brittany Spinner, Rachel Miller-Moudgil"
+date: "2022-11-08"
+output: pdf_document
+---
+
+
+# commit 1 (code hidden)
+```{r Commit 1 setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, fig.height = 8, fig.width = 6.5)
+
+library(rio)
+library(here)
+library(tidyverse)
+library(knitr)
+library(gtsummary)
+
+star <- import(here("data", "star.csv"))
+
+```
+
+# commit 3
+```{r Commit 3}
+
+star_df <- star %>% 
+  group_by(sex, frl) %>% 
+  summarize(math_mean = mean(tmathss), math_sd = sd(tmathss),
+                         rdg_mean = mean(treadss),
+                         rdg_sd = sd(treadss))
+
+knitr:: kable(star_df, booktabs = TRUE)
+
+```
+
+The scores `r star_df$math_mean` represent ( _in order_ ) the mean math scores for boys _without_, boys _with_, and girls _without_, and girls _with_ free or reduced price lunches in this data sample. The standard deviation of the math mean scores `r star_df$math_sd` represent ( _in order_ ) the standard deviation of math scores for boys _without_, boys _with_, and girls _without_, and girls _with_ free or reduced price lunches in this data sample. The  scores `r star_df$rdg_mean` represent the mean reading scores for boys _without_, boys _with_, and girls _without_, and girls _with_ free or reduced price lunches in this sample. And the standard deviation of reading scores `r star_df$rdg_sd` represent the standard deviation of reading scores for for boys _without_, boys _with_, and girls _without_, and girls _with_ free or reduced price lunches in this data sample.
+
+# commit 4
+```{r Commit 4, eval=TRUE}
+star$frl <- factor(star$frl)
+
+
+ggplot(star, aes(x = totexp, y = tmathss)) +
+  geom_point(color = "grey") + 
+  geom_smooth(aes(color = frl), method = "lm")+
+  labs(title = "Relation between teacher experience and math scores",
+         subtitle = "Separate regression lines displayed by freereduces price lunch status",
+         x = "Teacher Experience (years)",
+         y = "Total Math Scale Score", 
+       color = "Lunch status")+
+  scale_color_discrete(breaks = c("yes", "no"), labels = c("yes" = "Free/Reduced Price Meals", "no" = "Paid Meals"))+
+  #scale_color_discrete(breaks = c("yes", "no"))+
+  theme_minimal() +
+  theme(legend.position = "bottom")
+
+#dominiks version
+#test
+```
